@@ -1,0 +1,120 @@
+- javascript 'Patients.js'
+%nav.navbar.navbar-default{:role => "navigation"}
+  .container-fluid
+    / Brand and toggle get grouped for better mobile display
+    .navbar-header
+      %button.navbar-toggle{"data-target" => "#bs-example-navbar-collapse-1", "data-toggle" => "collapse", :type => "button"}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      %a.navbar-brand{:href => "/"} Home
+    / Collect the nav links, forms, and other content for toggling
+    #bs-example-navbar-collapse-1.collapse.navbar-collapse
+      %ul.nav.navbar-nav
+        %li.active
+          - if user_signed_in?
+            = content_tag(:a, current_user.nickname)
+          - else
+            = link_to "Log In", new_user_session_path
+        - if user_signed_in?
+          %li.dropdown
+            %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+              Hospital
+              %span.caret
+            %ul.dropdown-menu{:role => "menu"}
+              %li.dropdown-header{:role => "presentation"} Current Hospital
+              %li
+                = link_to "#{@hospital.name}'s Data", hospital_path(@hospital)
+              %li
+                = link_to "#{@hospital.name}'s Patients", hospital_patients_path(@hospital)              
+              %li.divider
+              %li
+                = link_to "Hospitals Home", hospitals_path
+          %li.dropdown
+            %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+              Edit
+              %span.caret
+            %ul.dropdown-menu{:role => "menu"}
+              %li.dropdown-header{:role => "presentation"} Current Patient
+              %li
+                = link_to "Remove #{@patient.last_name}", hospital_patient_path, method: :delete
+              %li.divider
+              %li.dropdown-header{:role => "presentation"} Remove Doctor              
+              - @patient.doctors.each do |doc|
+                %li
+                  = link_to "#{doc.name}", destroy_doctor_hospital_patient_path(@hospital, @patient, doctor_id: doc.id), method: :delete
+          %li
+            = link_to "#{@patient.last_name}'s Data", hospital_patient_path(@hospital, @patient)
+      %ul.nav.navbar-nav.navbar-right
+        - if user_signed_in?
+          %li.dropdown
+            %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+              Account
+              %span.caret
+            %ul.dropdown-menu{:role => "menu"}
+              %li
+                = link_to "Edit", edit_user_registration_path
+              %li.divider
+              %li
+                = link_to "Log Out", destroy_user_session_path, method: :delete
+    / /.navbar-collapse
+  / /.container-fluid
+
+.row.text-center
+  .col-md-12
+    = form_for [@hospital, @patient] do |f|
+      %ul
+        - if @patient.errors.any?
+          = "#{pluralize(@patient.errors.count, "error")} prohibited this patient from being saved:"
+          - @patient.errors.full_messages.each do |msg|
+            %li
+              = msg
+
+.row.text-center
+  .col-md-3
+  .col-md-6
+    .panel.panel-success
+      .panel-heading
+        %h3
+          = "Edit #{@patient.last_name}'s info"
+      .panel-body
+        = form_for [@hospital, @patient] do |f|  
+          = f.label :first_name, "First"
+          %br/
+          = f.text_field :first_name
+          %br/
+          %br/
+          = f.label :last_name, "Last" 
+          %br/
+          = f.text_field :last_name 
+          %br/
+          %br/
+          = f.label :dob, "Date of Birth"
+          %br/
+          = f.date_field :dob 
+          %br/
+          %br/
+          = f.label :complaint
+          %br/
+          = f.text_field :complaint
+          %br/
+          %br/ 
+          = f.label :sex, "Gender"
+          %br/
+          = f.collection_radio_buttons(                                                             |
+              :sex, [['Male', 'Male'], ['Female', 'Female'], ['Asexual','Asexual']], :first, :last, |
+            )
+          .col-sm-12
+            %button.btn.btn-success{:type => "submit"} Edit
+  .col-md-3  
+
+
+
+
+
+
+
+
+
+

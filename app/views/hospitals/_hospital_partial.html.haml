@@ -1,0 +1,8 @@
+.panel.panel-success
+  .panel-heading
+    %h1.panel-title 
+      = link_to "#{comp_hospital.name}", hospital_path(comp_hospital)
+  .panel-body
+    = "#{comp_hospital.address}"
+    %br
+    = "#{comp_hospital.phone_number}"

@@ -1,0 +1,109 @@
+- javascript 'hospitals.js'
+%nav.navbar.navbar-default{:role => "navigation"}
+  .container-fluid
+    / Brand and toggle get grouped for better mobile display
+    .navbar-header
+      %button.navbar-toggle{"data-target" => "#bs-example-navbar-collapse-1", "data-toggle" => "collapse", :type => "button"}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      %a.navbar-brand{:href => "/"} Home
+    / Collect the nav links, forms, and other content for toggling
+    #bs-example-navbar-collapse-1.collapse.navbar-collapse
+      %ul.nav.navbar-nav
+        %li.active
+          - if user_signed_in?
+            = content_tag(:a, current_user.nickname)
+          - else
+            = link_to "Log In", new_user_session_path
+        - if current_user.admin?          
+          %li
+            = link_to "Add Hospital", new_hospital_path
+      %ul.nav.navbar-nav.navbar-right
+        %li
+          /   %form.navbar-form.navbar-left{:role => "search"}
+          %form.navbar-form.navbar-right{:role => "search"}
+            .input-group
+              %input.form-control{:placeholder => "Find Hospital", :type => "text", :class => "hospital_search"}
+                %span.input-group-btn
+                  %button.btn.btn-default{:type => "button", :class => "search_hospitals"} Go
+        - if user_signed_in?
+          %li.dropdown
+            %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+              Account
+              %span.caret
+            %ul.dropdown-menu{:role => "menu"}
+              %li
+                = link_to "Edit", edit_user_registration_path
+              %li.divider
+              %li
+                = link_to "Log Out", destroy_user_session_path, method: :delete
+    / /.navbar-collapse
+  / /.container-fluid
+- group_number_total = 0
+.row.text-center 
+  .col-md-2
+  .col-md-8
+    %ul.search_list
+    #accordion.panel-group
+    - Hospital.all.each_slice(6) do |hospital_group|
+      - group_number_total += 1
+      - hospital_group.each do |hos|
+        .panel.panel-success{class: "#{'hidden' if group_number_total >= 2} group_#{group_number_total} hospital_list"}
+          .panel-heading
+            %h4.panel-title
+              %a{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapse_#{hos.id}"}
+                = "#{hos.name}"
+          .panel-collapse.collapse{id: "collapse_#{hos.id}"}
+            .panel-body
+              = "#{hos.address}"
+              %br/
+              = "#{hos.phone_number}"
+              %br/
+              %strong
+                = link_to "View Data", hospital_path(hos)
+    - group_number_total.times do |x|
+      %ul.pagination
+        %li
+          = link_to x + 1, "javascript:void(0);", class: "new_page"
+
+    / %ul.search_list
+    /   #accordion.panel-group
+    /     - Hospital.all.each_slice(5) do |hospital_group|
+    /       - group_number_total += 1
+    /       - hospital_group.each do |hos|              
+    /         %li{class: "#{'hidden' if group_number_total >= 2} group_#{group_number_total} hospital_list"}
+    /           .panel.panel-success
+    /             .panel-heading
+    /               %h1.panel-title
+    /                 %a{"data-parent" => "#accordion.panel-group", "data-toggle" => "collapse", :href => "#collapse"}
+    /                   = "#{hos.name}"
+    /             #collapse.panel-collapse.collapse.in
+    /               .panel-body
+    /                 = "#{hos.address}"
+    /                 %br
+    /                 = "#{hos.phone_number}"
+    / - group_number_total.times do |x|
+    /   %ul.pagination
+    /     %li
+    /       = link_to x + 1, "javascript:void(0);", class: "new_page"          
+
+
+
+
+/ %h1 Hospital Databases
+/ = user_login_links
+/ = link_to "Add Hospital", new_hospital_path
+/ %a ---
+/ = link_to "home", root_path
+/ %hr/
+/ %br/
+
+/ - @hospital.each do |hos|
+/   %ol
+/     = link_to hos.name, hospital_path(hos)
+/     %br/
+/     %strong= hos.workflow_state
+/     %br/
+

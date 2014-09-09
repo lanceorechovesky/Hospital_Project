@@ -1,0 +1,5 @@
+%strong
+  = comp_medication.name
+|
+= link_to 'View', hospital_patient_medication_path(@hospital, comp_medication.patient, comp_medication)
+%br/

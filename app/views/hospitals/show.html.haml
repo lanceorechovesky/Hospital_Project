@@ -1,0 +1,164 @@
+%nav.navbar.navbar-default{:role => "navigation"}
+  .container-fluid
+    / Brand and toggle get grouped for better mobile display
+    .navbar-header
+      %button.navbar-toggle{"data-target" => "#bs-example-navbar-collapse-1", "data-toggle" => "collapse", :type => "button"}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      %a.navbar-brand{:href => "/"} Home
+    / Collect the nav links, forms, and other content for toggling
+    #bs-example-navbar-collapse-1.collapse.navbar-collapse
+      %ul.nav.navbar-nav
+        %li.active
+          - if user_signed_in?
+            = content_tag(:a, current_user.nickname)
+          - else
+            = link_to "Log In", new_user_session_path
+        - if user_signed_in?
+          %li
+            = link_to "Hospitals", hospitals_path
+        - if current_user.admin?
+          %li.dropdown
+            %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+              Edit
+              %span.caret
+            %ul.dropdown-menu{:role => "menu"}
+              %li.dropdown-header{:role => "presentation"} Current Hospital
+              %li
+                = link_to "#{@hospital.name}'s Data", edit_hospital_path(@hospital)
+              %li
+                = link_to "Remove #{@hospital.name}", hospital_path, method: :delete
+              %li.divider
+                %li.dropdown-header{:role => "presentation"} Remove Doctors                 
+                - @hospital.doctors.each do |doc|
+                  %li
+                    = link_to "#{doc.name}", destroy_doctor_hospital_path(@hospital, doctor_id: doc.id), method: :delete
+          %li
+            = link_to "#{@hospital.name}'s patients", hospital_patients_path(@hospital)
+        - else      
+          %li
+            = link_to "#{@hospital.name}'s patients", hospital_patients_path(@hospital)    
+      %ul.nav.navbar-nav.navbar-right
+        - if user_signed_in?
+          %li.dropdown
+            %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+              Account
+              %span.caret
+            %ul.dropdown-menu{:role => "menu"}
+              %li
+                = link_to "Edit", edit_user_registration_path
+              %li.divider
+              %li
+                = link_to "Log Out", destroy_user_session_path, method: :delete
+    / /.navbar-collapse
+  / /.container-fluid
+
+
+
+- if current_user.admin?
+  .row.text-center
+    .col-md-1
+    .col-md-5
+      .panel.panel-success
+        .panel-heading
+          %h1.panel-title 
+            = link_to "#{@hospital.name}'s Data", hospital_patients_path(@hospital)
+        .panel-body
+          %ul
+          %strong
+            = "name"
+          %br/
+          = @hospital.name
+          %br/
+          %br/
+          %strong
+            = "address"
+          %br/
+          = @hospital.address
+          %br/
+          %br/
+          %strong
+            = "Phone Number"
+          %br/
+          = @hospital.phone_number
+          %br/
+          %br/
+          %strong
+            = "Doctors on call"
+          %br/
+          - @hospital.doctors.each do |doc|
+            - if doc.name
+              = doc.name
+              %br/
+    .col-md-1
+    .col-md-3
+      .panel.panel-success
+        .panel-heading
+          %h5 Add a Docter
+        .panel-body
+          %form.form-horizontal{:role => "form"}
+          = form_for @doctor, url: create_doctor_hospital_path(@hospital) do |f|    
+            .form-group
+              .col-md-2
+              .col-sm-8.col-md-8
+                = f.label :name, "Doctor coming on call"
+                = f.text_field :name, class: "form-control"
+            .form-group
+              .col-sm-12
+                %button.btn.btn-success{:type => "submit"} Add Doctor
+- else                
+  .row.text-center
+    .col-md-3
+    .col-md-6
+      .panel.panel-success
+        .panel-heading
+          %h1.panel-title 
+            = link_to "#{@hospital.name}'s Data", hospital_patients_path(@hospital)
+        .panel-body
+          %ul
+          %strong
+            = "name"
+          %br/
+          = @hospital.name
+          %br/
+          %br/
+          %strong
+            = "address"
+          %br/
+          = @hospital.address
+          %br/
+          %br/
+          %strong
+            = "Phone Number"
+          %br/
+          = @hospital.phone_number
+          %br/
+          %br/
+          %strong
+            = "Doctors on call"
+          %br/
+          - @hospital.doctors.each do |doc|
+            - if doc.name
+              = doc.name
+              %br/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,91 @@
+- javascript 'patients.js'
+%nav.navbar.navbar-default{:role => "navigation"}
+  .container-fluid
+    / Brand and toggle get grouped for better mobile display
+    .navbar-header
+      %button.navbar-toggle{"data-target" => "#bs-example-navbar-collapse-1", "data-toggle" => "collapse", :type => "button"}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      %a.navbar-brand{:href => "/"} Home
+    / Collect the nav links, forms, and other content for toggling
+    #bs-example-navbar-collapse-1.collapse.navbar-collapse
+      %ul.nav.navbar-nav
+        %li.active
+          - if user_signed_in?
+            = content_tag(:a, current_user.nickname)
+          - else
+            = link_to "Log In", new_user_session_path
+        - if user_signed_in?
+          %li.dropdown
+            %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+              Hospital
+              %span.caret
+            %ul.dropdown-menu{:role => "menu"}
+              %li.dropdown-header{:role => "presentation"} Current Hospital
+              %li
+                = link_to "#{@hospital.name}'s Data", hospital_path(@hospital)
+              %li.divider
+              %li
+                = link_to "Hospitals Home", hospitals_path
+        - if current_user.admin?
+          %li
+            = link_to "Add Patient", new_hospital_patient_path(@hospital)
+      %ul.nav.navbar-nav.navbar-right
+        - if user_signed_in?
+          %li
+            %form.navbar-form.navbar-right{:role => "search"}
+              .input-group
+                %input.form-control{:placeholder => "Find Patient", :type => "text", :class => "hospital_patient_search"}
+                  %span.input-group-btn
+                    %button.btn.btn-default{:type => "button", :class => "search_hospital_patients", :link => search_hospital_patients_hospital_patients_path(@hospital)} Go
+          %li.dropdown
+            %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+              Account
+              %span.caret
+            %ul.dropdown-menu{:role => "menu"}
+              %li
+                = link_to "Edit", edit_user_registration_path
+              %li.divider
+              %li
+                = link_to "Log Out", destroy_user_session_path, method: :delete
+    / /.navbar-collapse
+  / /.container-fluid
+- group_number_total = 0
+.row.text-center
+  .col-md-1
+  .col-md-10
+    %ul.search_list
+    #accordion.panel-group
+    - @hospital.patients.all.each_slice(6) do |patient_group|
+      - group_number_total += 1
+      - patient_group.each do |pat|
+        .panel.panel-success{class: "#{'hidden' if group_number_total >= 2} group_#{group_number_total} patient_list"}
+          .panel-heading
+            %h4.panel-title
+              %a{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapse_#{pat.id}"} 
+                = "#{pat.first_name} #{pat.last_name}"
+          .panel-collapse.collapse{id: "collapse_#{pat.id}"}      
+            .panel-body
+              = "#{pat.dob}"
+              %br/
+              = "#{pat.workflow_state}"
+              %br/
+              %strong
+                = link_to "View Data", hospital_patient_path(@hospital, pat)
+    - group_number_total.times do |x|
+      %ul.pagination
+        %li
+          = link_to x + 1, "javascript:void(0);", class: "new_page"   
+
+/ %h1 Patient Databank
+/ - @hospital.patients.each do |pat|
+/   %ol
+/     = link_to pat.last_name, hospital_patient_path(@hospital, pat)
+/     = link_to pat.first_name, hospital_patient_path(@hospital, pat)
+/     %br/
+/     = pat.dob
+/     %strong= pat.workflow_state
+/     %br/
+

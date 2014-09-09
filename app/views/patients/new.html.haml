@@ -1,0 +1,87 @@
+%nav.navbar.navbar-default{:role => "navigation"}
+  .container-fluid
+    / Brand and toggle get grouped for better mobile display
+    .navbar-header
+      %button.navbar-toggle{"data-target" => "#bs-example-navbar-collapse-1", "data-toggle" => "collapse", :type => "button"}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      %a.navbar-brand{:href => "/"} Home
+    / Collect the nav links, forms, and other content for toggling
+    #bs-example-navbar-collapse-1.collapse.navbar-collapse
+      %ul.nav.navbar-nav
+        %li.active
+          - if user_signed_in?
+            = content_tag(:a, current_user.nickname)
+          - else
+            = link_to "Log In", new_user_session_path
+        - if user_signed_in?
+          %li
+            = link_to "Hospitals", hospitals_path
+          %li
+            = link_to "Patients", hospital_patients_path(@hospital)
+      / %a{:href => "#"} Separated link= link_to "Patients", hospital_patients_path(@hospital)
+      %ul.nav.navbar-nav.navbar-right
+        - if user_signed_in?
+          %li.dropdown
+            %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+              Account
+              %span.caret
+            %ul.dropdown-menu{:role => "menu"}
+              %li
+                = link_to "Edit", edit_user_registration_path
+              %li.divider
+              %li
+                = link_to "Log Out", destroy_user_session_path, method: :delete
+    / /.navbar-collapse
+  / /.container-fluids
+
+.row.text-center
+  .col-md-12
+    = form_for [@hospital, @patient] do |f|
+      %ul
+        - if @patient.errors.any?
+          = "#{pluralize(@patient.errors.count, "error")} prohibited this patient from being saved:"
+          - @patient.errors.full_messages.each do |msg|
+            %li
+              = msg
+.row.text-center
+  .col-md-3
+  .col-md-6
+    .panel.panel-success
+      .panel-heading
+        %h3 Add Patient Here
+      .panel-body
+        %form.form-horizontal{:role => "form"}
+        = form_for [@hospital, @patient] do |f|
+          .form-group
+            .col-md-3
+            .col-md-6
+              = f.label :first_name, "First"
+              = f.text_field :first_name, class: "form-control"
+          .form-group
+            .col-md-12
+              = f.label :last_name, "Last"
+              = f.text_field :last_name, class: "form-control"
+          .form-group
+            .col-md-12                
+              = f.label :dob
+              = f.date_field :dob
+          .form-group
+            .col-md-12  
+              = f.label :complaint
+              = f.text_field :complaint
+          .form-group
+            .col-sm-12.col-md-12
+              = f.label :sex, "Gender"
+              %br/
+              = f.collection_radio_buttons(                                                             |
+                  :sex, [['Male', 'Male'], ['Female', 'Female'], ['Asexual','Asexual']], :first, :last, |
+                )
+          .form-group                                                                                         |
+            .col-sm-12
+              %button.btn.btn-success{:type => "submit"} Add
+    
+      
+    
