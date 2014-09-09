@@ -42,6 +42,7 @@
     / /.navbar-collapse
   / /.container-fluid
 - group_number_total = 0
+- markers = ''
 .row.text-center 
   .col-md-2
   .col-md-8
@@ -57,12 +58,15 @@
                 = "#{hos.name}"
           .panel-collapse.collapse{id: "collapse_#{hos.id}"}
             .panel-body
+              - markers = "#{hos.latitude}%2C#{hos.longitude}&"
               = "#{hos.address}"
               %br/
               = "#{hos.phone_number}"
               %br/
               %strong
                 = link_to "View Data", hospital_path(hos)
+              %br/
+              = image_tag "http://maps.google.com/maps/api/staticmap?size=700x300&sensor=false&markers=#{markers}"
     - group_number_total.times do |x|
       %ul.pagination
         %li

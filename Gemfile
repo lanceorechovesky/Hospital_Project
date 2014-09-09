@@ -1,22 +1,33 @@
 source 'https://rubygems.org'
 
+# adds mapping functions 
+gem 'geocoder'
+
+# controls user functions 
 gem 'devise', '~> 3.3.0'
 gem 'pundit', '~> 0.3.0'
 
+# allows the use of haml
 gem 'haml-rails', '~> 0.5.3'
 gem 'html2haml'
 
+# controls patient statuses 
 gem 'workflow'
 
+# allows easier validations 
 gem 'validates_timeliness', '~> 3.0'
 
+# builds fake data to test database
 gem 'faker'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.4'
+
 # Use sqlite3 as the database for Active Record
 gem 'mysql2', group: :development
 gem 'pg', group: :production
 gem 'rails_12factor', group: :production
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
