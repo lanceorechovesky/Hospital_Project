@@ -6,6 +6,8 @@ This is an example of a hospital database system to track hospitals, the patient
 
 * uses mysql2 for the database
 
+* bundle install
+
 * run rake db:create db:migrate
 
 * use rspec to test
